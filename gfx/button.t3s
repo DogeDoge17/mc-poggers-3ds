@@ -1,0 +1,3 @@
+--atlas -f rgba8888 -z auto
+"Button Bg.png"
+"Button Bg Selected.png"
