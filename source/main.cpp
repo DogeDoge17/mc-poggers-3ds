@@ -13,8 +13,8 @@
 #define TOP_SCREEN_HEIGHT 240
 
 
-#define BOTTOM_SCREEN_WIDTH  400
-#define BOTTOM_SCREEN_HEIGHT 240
+#define BOTTOM_SCREEN_WIDTH  320 
+#define BOTTOM_SCREEN_HEIGHT 240 
 
 #include "engine/sceneManage.hpp"
 #include "engine/time.hpp"

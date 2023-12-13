@@ -52,6 +52,7 @@ public:
 	{
 		C2D_DrawSprite(&dirtSpr);
 		singlePlrBtn.render();
+		//C2D_DrawRectangle (0, 0, 0, BOTTOM_SCREEN_WIDTH/2, BOTTOM_SCREEN_HEIGHT/2, C2D_Color32f(0.0f, 1.0f, 1.0f, 1.0f), C2D_Color32f(1.0f, 0.0f, 1.0f, 1.0f), C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f), C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	void start()
@@ -64,8 +65,8 @@ public:
 		C2D_SpriteFromSheet(&dirtSpr, dirtBg, 0);
 		C2D_SpriteScale(&dirtSpr, 1, 1); 
 	
-		singlePlrBtn = 	Button(&buttonSprSh, "Singleplayer", &mcFont, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f), BOTTOM_SCREEN_WIDTH /4, 8, 678, 78);
-
+		singlePlrBtn = 	Button(&buttonSprSh, "Singleplayer", &mcFont, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f), BOTTOM_SCREEN_WIDTH /2, 16, .25, .5f);
+		singlePlrBtn.centreY = 0;
 	}
 
 	void load()

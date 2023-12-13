@@ -24,10 +24,13 @@ public:
 
 	int selected;
 
+    float centreX = 0.5f;
+ 	float centreY = 0.5f;
+
 	Button(){}
 
 
-	Button(C2D_SpriteSheet* buttonBg, std::string btnText, C2D_Font* buttonFont, u32 textColour, int xPos, int yPos, int btnWidth, int btnHeight)
+	Button(C2D_SpriteSheet* buttonBg, std::string btnText, C2D_Font* buttonFont, u32 textColour, int xPos, int yPos, float btnWidth, float btnHeight)
 	{
 		texture = buttonBg;
 		text = btnText;
@@ -44,6 +47,8 @@ public:
 
 		C2D_SpriteFromSheet(&currSprite, *texture, 0);
 		C2D_SpriteScale(&currSprite, xScale, yScale);
+		C2D_SpriteSetCenter(&currSprite, centreX, centreY);
+
 		C2D_SpriteSetPos(&currSprite, x, y);
 	}
 
