@@ -1,0 +1,4 @@
+--atlas -f rgba8888 -z auto
+"heartEmpty.png"
+"heartHalf.png"
+"heartFull.png"

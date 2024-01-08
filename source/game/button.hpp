@@ -24,12 +24,14 @@ public:
 
 	int selected;
 
-    float centreX = 0.5f;
- 	float centreY = 0.5f;
+	float centreX = 0.5f;
+	float centreY = 0.5f;
+
+	float textScaleX = 0.5f;
+	float textScaleY= 0.5f;
 
 	Button(){}
-
-
+	
 	Button(C2D_SpriteSheet* buttonBg, std::string btnText, C2D_Font* buttonFont, u32 textColour, int xPos, int yPos, float btnWidth, float btnHeight)
 	{
 		texture = buttonBg;
@@ -41,8 +43,10 @@ public:
 
 		font = buttonFont;
 
+		colour = textColour;
+
 		g_staticBuf  = C2D_TextBufNew(4096);
-		C2D_TextFontParse(&g_staticText, *font, g_staticBuf, btnText.c_str());
+		C2D_TextFontParse(&g_staticText, *font, g_staticBuf, text.c_str());
 		C2D_TextOptimize(&g_staticText);
 
 		C2D_SpriteFromSheet(&currSprite, *texture, 0);
@@ -55,13 +59,32 @@ public:
 	void updateText(std::string newText){
 		text = newText;
 
-		C2D_TextFontParse(&g_staticText, *font, g_staticBuf, newText.c_str());
+		C2D_TextFontParse(&g_staticText, *font, g_staticBuf, text.c_str());
 		C2D_TextOptimize(&g_staticText);
+	}
+
+	void changedSelected(int sel)
+	{
+		selected = sel;		
+		
+		if(selected == 1){
+			C2D_SpriteFromSheet(&currSprite, *texture, 1);
+		}else if (selected == 0){
+			C2D_SpriteFromSheet(&currSprite, *texture, 0);
+
+		}
+
+		C2D_SpriteScale(&currSprite, xScale, yScale);
+		C2D_SpriteSetCenter(&currSprite, centreX, centreY);
+		C2D_SpriteSetPos(&currSprite, x, y);
 	}
 
 	void render(){
 		C2D_DrawSprite(&currSprite);
-		C2D_DrawText(&g_staticText, C2D_WithColor, x, y, 0, 0.5f, 0.5f, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
+		float outWidth = 0;
+		float outHeight = 0;
+		C2D_TextGetDimensions(&g_staticText, textScaleX, textScaleY, &outWidth, &outHeight);
+		C2D_DrawText(&g_staticText, C2D_AlignCenter | C2D_WithColor, x + textScaleX, y - (outHeight/2), 0, textScaleX, textScaleY, colour);
 	}
 
 	void unload()

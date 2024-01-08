@@ -1,11 +1,6 @@
 #pragma once
-//#include "../game_stuff/GameStuff.hpp"
 #include "RenderingSystem.hpp"
 #include <type_traits>
-/*class Hierarchy 
-{
-	std::vector<GameObject*> gameObjects;
-};*/
 
 
 class Scene

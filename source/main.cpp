@@ -10,7 +10,7 @@
 #include <time.h>
 
 #define TOP_SCREEN_WIDTH  400
-#define TOP_SCREEN_HEIGHT 240
+#define TOP_SCREEN_HEIGHT 240 
 
 
 #define BOTTOM_SCREEN_WIDTH  320 
@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 	C3D_RenderTarget* bottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
 	SceneManagement::loadScene<TitleScene>();
+	SceneManagement::loadScene<TitleScene>();
 
 	spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
 	if (!spriteSheet) svcBreak(USERBREAK_PANIC);
@@ -60,6 +61,7 @@ int main(int argc, char* argv[]) {
 		SceneManagement::activeScene->drawTop();
 
 		C3D_FrameEnd(0);
+		
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(bottom, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
 		C2D_SceneBegin(bottom);
