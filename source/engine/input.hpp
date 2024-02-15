@@ -1,5 +1,6 @@
 #pragma once
 #include <3ds.h>
+#include <citro2d.h>
 #include <bits/stdc++.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -56,11 +57,21 @@ namespace RotationDirection{
 };
 
 
+struct TouchInfo{
+	touchPosition pos;
+	bool validTouch;
+};
+
+bool INP_touchDown = false;
+bool INP_touchDownR = true;
+bool INP_touchUpR = true;
+bool INP_touchUp = false;
+
 //wrapper class for the built-in input system because im a stupid unity user
 class Input
 {
 private:
-	static constexpr float m_deadZone = 0.2f;
+	static constexpr float m_deadZone = 0.2f; 
 
 public:
 	static bool GetKeyDown(KeyCode::KeyCodes code)
@@ -171,7 +182,7 @@ public:
 		return false;
 	}
 
-	//Applies a deadzone i dont really remember what the original method does so it will do this :3
+	//Applies a deadzone i dont really remember what the original method does so it will do this
 	static float GetAxisRaw(AnalogCode::AnalogCodes code)
 	{
 		switch(code)
@@ -187,6 +198,65 @@ public:
 		}
 		return 0;
 	}
+
+
+	static void Update(){
+		touchPosition touch;
+		hidTouchRead(&touch);
+	    
+	    if (touch.px > 0 || touch.py > 0)
+        {
+        	INP_touchUpR = false;
+        	if(INP_touchDownR){
+            	INP_touchDown = true;
+            	INP_touchUp = false;
+            	INP_touchDownR = false;
+            }else
+            	INP_touchDown = false;
+
+        }
+        if (touch.px == 0 && touch.py == 0)
+        {
+        	if(INP_touchUpR)
+        		INP_touchUp = false;
+
+            if (INP_touchDown == true)
+            {
+                INP_touchDown = false;
+                INP_touchUp = true;
+                INP_touchUpR = true;
+            }
+            INP_touchDownR = true;
+        }
+
+	}
+
+	
+	static TouchInfo GetTouch()
+	{
+		TouchInfo touchInfo;
+		hidTouchRead(&touchInfo.pos);
+		touchInfo.validTouch = touchInfo.pos.px != 0 || touchInfo.pos.py != 0;
+		return touchInfo;
+	}
+
+	static TouchInfo GetTouchDown()
+	{
+		TouchInfo touchInfo;
+		hidTouchRead(&touchInfo.pos);
+		touchInfo.validTouch = INP_touchDown;
+		return touchInfo;
+	}
+
+	static TouchInfo GetTouchUp()
+	{
+		TouchInfo touchInfo;
+		hidTouchRead(&touchInfo.pos);
+		touchInfo.validTouch = INP_touchUp;
+		return touchInfo;
+	}
+
+
 
 	#pragma GCC diagnostic ignored "-Wswitch" //i think this is help optimize but idk
 	static float GetAxis(AnalogCode::AnalogCodes code)

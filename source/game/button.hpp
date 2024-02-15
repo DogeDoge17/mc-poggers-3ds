@@ -59,6 +59,8 @@ public:
 	void updateText(std::string newText){
 		text = newText;
 
+		C2D_TextBufClear(g_staticBuf);
+		
 		C2D_TextFontParse(&g_staticText, *font, g_staticBuf, text.c_str());
 		C2D_TextOptimize(&g_staticText);
 	}
@@ -78,6 +80,23 @@ public:
 		C2D_SpriteSetCenter(&currSprite, centreX, centreY);
 		C2D_SpriteSetPos(&currSprite, x, y);
 	}
+
+	bool checkPressed()
+	{
+		TouchInfo touch = Input::GetTouchDown();
+		
+
+		if(touch.validTouch)
+		{
+			if(touch.pos.px >= x - (currSprite.params.pos.w / 2) && touch.pos.px <= x + (currSprite.params.pos.w / 2) && touch.pos.py >= y - (currSprite.params.pos.h / 2) && touch.pos.py <= y + (currSprite.params.pos.h / 2))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 
 	void render(){
 		C2D_DrawSprite(&currSprite);

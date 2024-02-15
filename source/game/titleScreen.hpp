@@ -118,10 +118,38 @@ public:
 			}
 		}
 
+		for(int i = 0; i < static_cast<int>(btns.size()); i++)
+		{
+			if(btns[i].checkPressed())
+			{
+
+				for(int j = 0; j < static_cast<int>(btns.size());  j++)
+				{
+					btns[j].changedSelected(0);
+				}	
+
+				btns[i].changedSelected(1);
+				selectedButton = i;
+				switch(i)
+				{
+					case 0:
+						SceneManagement::loadScene<GameScene>();
+						break;
+					case 1:
+						SceneManagement::loadScene<GameScene>();
+						break;
+					case 2:						
+						SceneManagement::loadScene<MultiplayerScene>();
+						break;				
+				}
+			}
+		}
+
 		if(Input::GetKeyDown(KeyCode::X))
 		{
 			SceneManagement::loadScene<TitleScene>();
 		}
+		
 		
 	}
 

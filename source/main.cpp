@@ -18,10 +18,31 @@
 
 #include "engine/sceneManage.hpp"
 #include "engine/time.hpp"
+#include "engine/input.hpp"
 #include "game/TitleScreen.hpp"
+
+#include "engine/debug.hpp"
+#include "engine/window.hpp"
 
 
 static C2D_SpriteSheet spriteSheet;
+
+//int fart;
+void Update()
+{
+	
+
+	if((Input::GetKeyDown(KeyCode::Start) && Input::GetKeyDown(KeyCode::Select)) || Input::GetKeyDown(KeyCode::ZR))
+	{
+		Debugger::Toggle();
+	/*	fart++;
+		Debugger::WriteLine("toggled "+std::to_string(fart) + " times"); 
+
+		if(Debugger::enabled)		
+			Debugger::WriteLine(std::to_string(Debugger::wholeConsole.size()) + " " + std::to_string(C2D_TextBufGetNumGlyphs(Debugger::g_staticBuf)));*/
+	}
+}
+
 
 //---------------------------------------------------------------------------------
 int main(int argc, char* argv[]) {
@@ -33,6 +54,8 @@ int main(int argc, char* argv[]) {
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 	C2D_Prepare();
+	Debugger::init();
+	window::init();
 	//consoleInit(GFX_BOTTOM, NULL);
 
 	// Create screens
@@ -51,14 +74,23 @@ int main(int argc, char* argv[]) {
 		hidScanInput();
 
 		Time::SetTime();
-	
-		SceneManagement::activeScene->update();
+		
+		Update();
+		if(window::enabled)
+			window::update();
+		else
+			SceneManagement::activeScene->update();
 
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(top, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
 		C2D_SceneBegin(top);
 
+
 		SceneManagement::activeScene->drawTop();
+
+		if(window::enabled)
+			window::renderTop();
+
 
 		C3D_FrameEnd(0);
 		
@@ -66,11 +98,23 @@ int main(int argc, char* argv[]) {
 		C2D_TargetClear(bottom, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
 		C2D_SceneBegin(bottom);
 		
-		SceneManagement::activeScene->drawBottom();
+
+
+		if(Debugger::enabled)
+			Debugger::render();
+		else{
+			SceneManagement::activeScene->drawBottom();
+		
+			if(window::enabled)
+				window::renderBottom();
+		}
 
 		C3D_FrameEnd(0);
+		Input::Update();
 	}
 
+	Debugger::exit();
+	window::sceneExit();
 	C2D_Fini();
 	C3D_Fini();
 	gfxExit();
