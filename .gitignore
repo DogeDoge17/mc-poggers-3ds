@@ -39,3 +39,6 @@
 build/
 romfs/
 web-ref/
+/.cache
+compile_commands.json
+/.idea

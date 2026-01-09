@@ -1,6 +1,3 @@
-// Simple citro2d sprite drawing example
-// Images borrowed from:
-//   https://kenney.nl/assets/space-shooter-redux
 #include <citro2d.h>
 
 #include <assert.h>
@@ -19,7 +16,7 @@
 #include "engine/sceneManage.hpp"
 #include "engine/time.hpp"
 #include "engine/input.hpp"
-#include "game/TitleScreen.hpp"
+#include "game/titleScreen.hpp"
 
 #include "engine/debug.hpp"
 #include "engine/window.hpp"
@@ -35,11 +32,6 @@ void Update()
 	if((Input::GetKeyDown(KeyCode::Start) && Input::GetKeyDown(KeyCode::Select)) || Input::GetKeyDown(KeyCode::ZR))
 	{
 		Debugger::Toggle();
-	/*	fart++;
-		Debugger::WriteLine("toggled "+std::to_string(fart) + " times"); 
-
-		if(Debugger::enabled)		
-			Debugger::WriteLine(std::to_string(Debugger::wholeConsole.size()) + " " + std::to_string(C2D_TextBufGetNumGlyphs(Debugger::g_staticBuf)));*/
 	}
 }
 
@@ -65,8 +57,8 @@ int main(int argc, char* argv[]) {
 	SceneManagement::loadScene<TitleScene>();
 	SceneManagement::loadScene<TitleScene>();
 
-	spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
-	if (!spriteSheet) svcBreak(USERBREAK_PANIC);
+  spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
+  if (!spriteSheet) svcBreak(USERBREAK_PANIC);
 
 	// Main loop
 	while (aptMainLoop())
@@ -76,40 +68,41 @@ int main(int argc, char* argv[]) {
 		Time::SetTime();
 		
 		Update();
-		if(window::enabled)
-			window::update();
-		else
-			SceneManagement::activeScene->update();
+    if(window::enabled)
+      window::update();
+    else
+      SceneManagement::activeScene->update();
 
-		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-		C2D_TargetClear(top, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
-		C2D_SceneBegin(top);
+    SceneManagement::activeScene->prerender();
 
+    C2D_Prepare();
+    C3D_DepthTest(false, GPU_ALWAYS, GPU_WRITE_COLOR);
+    /* top screen */{
+      C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+      C2D_TargetClear(top, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
+      C2D_SceneBegin(top);
 
-		SceneManagement::activeScene->drawTop();
+      SceneManagement::activeScene->drawTop();
 
-		if(window::enabled)
-			window::renderTop();
+      if(window::enabled) window::renderTop();
+      C3D_FrameEnd(0);
+    }
 
+    /* bottom screen */ {
+      C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+      C2D_TargetClear(bottom, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
+      C2D_SceneBegin(bottom);
 
-		C3D_FrameEnd(0);
-		
-		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-		C2D_TargetClear(bottom, C2D_Color32f(1.0f, 1.0f, 1.0f, 1.0f));
-		C2D_SceneBegin(bottom);
-		
+      if(Debugger::enabled)
+        Debugger::render();
+      else{
+        SceneManagement::activeScene->drawBottom();
+        if(window::enabled) window::renderBottom();
+      }
 
+      C3D_FrameEnd(0);
+    }
 
-		if(Debugger::enabled)
-			Debugger::render();
-		else{
-			SceneManagement::activeScene->drawBottom();
-		
-			if(window::enabled)
-				window::renderBottom();
-		}
-
-		C3D_FrameEnd(0);
 		Input::Update();
 	}
 
